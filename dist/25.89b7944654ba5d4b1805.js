@@ -1,4 +1,4 @@
-(self["webpackChunkentry_js"] = self["webpackChunkentry_js"] || []).push([[25],{
+(self["webpackChunk_entrylabs_entry"] = self["webpackChunk_entrylabs_entry"] || []).push([[25],{
 
 /***/ 63025:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -323,6 +323,8 @@ var map = {
 	"./block_robotisRBCar.js": 28377,
 	"./block_robotisRBHumanoid": 51297,
 	"./block_robotisRBHumanoid.js": 51297,
+	"./block_robotisRBKoala": 39768,
+	"./block_robotisRBKoala.js": 39768,
 	"./block_robotisRBPracticalAssembly": 44724,
 	"./block_robotisRBPracticalAssembly.js": 44724,
 	"./block_robotori": 5370,
@@ -357,8 +359,8 @@ var map = {
 	"./block_turtle.js": 33378,
 	"./block_uglybot": 72779,
 	"./block_uglybot.js": 72779,
-	"./block_uo_albert": 28681,
-	"./block_uo_albert.js": 28681,
+	"./block_uo_albert": 47243,
+	"./block_uo_albert.js": 47243,
 	"./block_wearable": 55145,
 	"./block_wearable.js": 55145,
 	"./block_xbot": 31066,
