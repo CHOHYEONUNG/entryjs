@@ -143,6 +143,10 @@
         <% } %>
 
         <script>
+            function saveWorkspace(){
+                const project = Entry.exportProject();
+                console.log(project)
+            }
             function handleUpdate() {
                 const file = document.getElementById('litemodule').files[0];
                 const name = document.getElementById('litemodulename').value;
