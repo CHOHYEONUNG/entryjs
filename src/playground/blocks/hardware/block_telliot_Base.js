@@ -10,10 +10,23 @@ const PreAction = {
 	ACTION_UNKNOWN: 0xFF,
 }
 
+const req_info = []
+
 class TelliotBase {
 	constructor() {
 		this.resetState();
 	}
+
+	async reqInfo(data, delayTime) {
+		if (req_info.length !== 0) {
+
+		}
+		await this.delay(delayTime);
+		req_info.push(data);
+		console.log(req_info);
+	}
+
+
 
 	setZero() {
 		this.resetState();
@@ -28,7 +41,7 @@ class TelliotBase {
 		});
 
 		// console.log('[afterReceive] : ' + keys);
-		// console.log('[afterReceive] : ', data.state);
+		 console.log('[afterReceive] : ', data.state);
 	}
 
 	afterSend = function () {
@@ -49,6 +62,7 @@ class TelliotBase {
 
 	async request(func, subkey, value, updateNow = false) {
 		const test = []
+
 		if (!Entry.hw.sendQueue[func])
 			Entry.hw.sendQueue[func] = {};
 
@@ -58,14 +72,12 @@ class TelliotBase {
 			Entry.hw.sendQueue[func] = value;
 		}
 
-		console.log('[' + func + '] : ' + value);
 
-		console.log(test)
+
+		console.log('[' + func + '] : ' + value);
 
 		if (updateNow)
 			Entry.hw.update();
-
-		// 딜레이 추가
 
 	}
 
@@ -79,6 +91,7 @@ class TelliotBase {
 	}
 
 	async req_voice_trigger(sprite, script) {
+		await this.reqInfo('req_voice_trigger_click')
 		await this.request('req_voice_trigger_click', null, 1);
 		return script.callReturn();
 	}
@@ -89,13 +102,47 @@ class TelliotBase {
 	}
 
 	async req_text_to_speech(sprite, script) {
+		// 스크립트에서 'TEXT_TO_SPEECH' 파라미터의 값을 가져옵니다.
 		const stot = script.getStringValue('TEXT_TO_SPEECH');
+		console.log(script);
 
-		console.log('[req_tts] : ' + stot);
-		await this.request('req_tts', null, stot, true);
-		await this.delay(3000);
+		// 디버깅을 위한 텍스트 값 출력
+		console.log('[req_tts] : ' + stot + stot.length);
+
+		// 텍스트 길이에 따라 지연 시간 설정
+		const textLength = stot.length;
+		let delayTime;
+
+		// 텍스트 길이에 따라 딜레이를 조정합니다.
+		if (textLength <= 30) {
+			delayTime = 5000;
+		} else if (textLength <= 40) {
+			delayTime = 6000;
+		}else if (textLength <=50) {
+			delayTime = 7000;
+		} else {
+			Entry.toast.warning('글자수 50자 제한으로 인한 동작불가', '현재 글자수 = ' + textLength,false)
+
+			return; //글자수 초과로 인한 동작 정지
+		}
+
+		try {
+			// TTS 명령을 하드웨어에 전송합니다.
+			await this.request('req_tts', null, stot, true);
+
+			// 딜레이 값과 함께 reqInfo 호출
+			await this.reqInfo('req_tts', delayTime);
+
+		} catch (error) {
+			// 에러가 발생했을 경우 에러를 출력합니다.
+			console.error('Error in req_text_to_speech:', error);
+		}
+
+		// 스크립트 실행 완료를 반환합니다.
 		return script.callReturn();
 	}
+
+
 
 	async req_add_prompt(sprite, script) {
 		const ai_prompt = script.getStringValue('AI_PROMPT');
@@ -230,6 +277,129 @@ class TelliotBase {
 			return false;
 		}
 	}
+
+	async req_change_led_color(sprite, script) {
+		const direction = script.getField('DIRECTION', script);
+		const color = script.getStringValue('COLOR', script);
+
+		// 색상을 RGB 값으로 변환
+		const rgb = Entry.hex2rgb(color);
+
+		// 변환된 RGB 값을 콘솔에 출력
+		console.log(`Direction: ${direction}, Color: ${color}, RGB: (${rgb.r}, ${rgb.g}, ${rgb.b})`);
+
+		// 하드웨어 명령을 보내는 부분
+		let ledCommand;
+		switch (direction) {
+			case 'left':
+				ledCommand = { left: { r: rgb.r, g: rgb.g, b: rgb.b } };
+				break;
+			case 'right':
+				ledCommand = { right: { r: rgb.r, g: rgb.g, b: rgb.b } };
+				break;
+			case 'both':
+				ledCommand = {
+					left: { r: rgb.r, g: rgb.g, b: rgb.b },
+					right: { r: rgb.r, g: rgb.g, b: rgb.b },
+				};
+				break;
+		}
+
+		// 전송할 명령을 콘솔에 출력
+		console.log('LED Command:', ledCommand);
+
+		// 실제 하드웨어로 명령을 전송
+		await this.request('led_change', null, ledCommand, true);
+
+		return script.callReturn();
+	}
+
+	async req_turn_off_led(sprite, script) {
+		const direction = script.getField('DIRECTION', script);
+
+		// RGB 값을 모두 0으로 설정하여 LED를 끕니다.
+		const rgb = { r: 0, g: 0, b: 0 };
+
+		// 전송할 명령을 콘솔에 출력
+		console.log(`Direction: ${direction}, RGB: (${rgb.r}, ${rgb.g}, ${rgb.b})`);
+
+		// 하드웨어 명령을 보내는 부분
+		let ledCommand;
+		switch (direction) {
+			case 'left':
+				ledCommand = { left: { r: rgb.r, g: rgb.g, b: rgb.b } };
+				break;
+			case 'right':
+				ledCommand = { right: { r: rgb.r, g: rgb.g, b: rgb.b } };
+				break;
+			case 'both':
+				ledCommand = {
+					left: { r: rgb.r, g: rgb.g, b: rgb.b },
+					right: { r: rgb.r, g: rgb.g, b: rgb.b },
+				};
+				break;
+		}
+
+		// 전송할 명령을 콘솔에 출력
+		console.log('LED Command (Turn Off):', ledCommand);
+
+		// 실제 하드웨어로 명령을 전송
+		await this.request('led_change', null, ledCommand, true);
+
+		return script.callReturn();
+	}
+
+	async req_change_led_rgb_color(sprite, script) {
+		const direction = script.getValue('DIRECTION', script);
+		let red = parseInt(script.getValue('RED', script), 10);
+		let green = parseInt(script.getValue('GREEN', script), 10);
+		let blue = parseInt(script.getValue('BLUE', script), 10);
+
+		// 0~255 범위로 값 제한
+		red = Math.max(0, Math.min(255, red));
+		green = Math.max(0, Math.min(255, green));
+		blue = Math.max(0, Math.min(255, blue));
+
+		// 색상을 출력
+		console.log(`Direction: ${direction}, RGB: (${red}, ${green}, ${blue})`);
+
+		// 하드웨어 명령을 생성
+		let ledCommand;
+		switch (direction) {
+			case 'left':
+				ledCommand = { left: { r: red, g: green, b: blue } };
+				break;
+			case 'right':
+				ledCommand = { right: { r: red, g: green, b: blue } };
+				break;
+			case 'both':
+				ledCommand = {
+					left: { r: red, g: green, b: blue },
+					right: { r: red, g: green, b: blue },
+				};
+				break;
+		}
+
+		// 전송할 명령을 콘솔에 출력
+		console.log('LED Command:', ledCommand);
+
+		// 실제 하드웨어로 명령을 전송
+		await this.request('led_change', null, ledCommand, true);
+
+		return script.callReturn();
+	}
+
+	req_cds_value(sprite, script) {
+		var sensor_value = this.state.cds_sensor_value || 0;  // CDS 센서 값
+		console.log('[req_cds_value] : ' + sensor_value);
+		return sensor_value;  // 센서 값을 반환
+	}
+
+
+
+
 }
 
 module.exports = { TelliotBase, PreAction };
+
+

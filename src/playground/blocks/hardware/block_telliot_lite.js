@@ -40,6 +40,12 @@ class TelliotLite extends TelliotBase {
 			// AI prompt
 //			'telliot_car_add_prompt',
 //			'telliot_car_set_prompt'
+
+			//nepes car
+			'telliot_car_set_led_color',
+			'telliot_car_led_off',
+			'telliot_car_led_rgb_setting',
+			'telliot_light_sensor_value'
 		];
 	}
 
@@ -70,6 +76,25 @@ class TelliotLite extends TelliotBase {
 					telliot_car_add_prompt : '%1 프롬프트 추가하기 %2',
 //					telliot_car_set_prompt : '%1 프롬프트로 설정하기'
 
+					//nepes_led
+					telliot_car_set_led_color : '%1 전조등을 %2으로 바꾸기 %3',
+					telliot_car_led_off : '%1 전조등 끄기 %2',
+					telliot_car_led_rgb_setting : '%1 전조등 색깔설정 빨간색: %2 초록색: %3 파란색: %4 %5',
+
+					//nepes light_sensor
+					telliot_light_sensor_value : '%1 빛센서 값 %2',
+					telliot_light_sensor_r : '%1 빛센서 %2 %3 일때 %4'
+
+					//nepes_color_sensor
+//					telliot_color_sensor_detect : '컬러센서의 색깔이 %1 인가?'
+//					telliot_color_sensor_resource : '컬러센서 %1 값'
+
+					//nepes_lange_sensor
+//					telliot_lange_sensor_detect : '거리센서 값 %1'
+//
+
+
+
 				},
 			},
 			en: {
@@ -96,6 +121,21 @@ class TelliotLite extends TelliotBase {
 					// AI prompt
 //					telliot_car_add_prompt : 'Add %1 prompt %2',
 //					telliot_car_set_prompt : 'Set %1 prompt'
+
+					//nepes_led
+					telliot_car_set_led_color : '%1 전조등을 %2으로 바꾸기 %3',
+					telliot_car_led_off : '%1 전조등 끄기 %2'
+//					telliot_car_led_rgb_setting : '%1 전조등 색깔설정 빨간색: %2 초록색: %3 파란색: %4 %5'
+
+					//nepes light_sensor
+//					telliot_light_sensor : '%1 빛센서 값'
+
+					//nepes_color_sensor
+//					telliot_color_sensor_detect : '컬러센서의 색깔이 %1 인가?'
+//					telliot_color_sensor_resource : '컬러센서 %1 값'
+
+					//nepes_lange_sensor
+//					telliot_lange_sensor_detect : '거리센서 값 %1'
 				},
 			},
 		};
@@ -636,6 +676,224 @@ class TelliotLite extends TelliotBase {
 				isNotFor : ['GoldenKidsAICar'],
 				func: (sprite, script) => this.req_add_prompt(sprite, script)
 			},
+			telliot_car_set_led_color: {
+				color: EntryStatic.colorSet.block.default.HARDWARE,
+				outerLine: EntryStatic.colorSet.block.darken.HARDWARE,
+				skeleton: 'basic',
+				statements: [],
+				params: [
+					{
+						type: 'Dropdown',
+						options: [
+							['왼쪽', 'left'],
+							['오른쪽', 'right'],
+							['양쪽', 'both'],
+						],
+						value: 'both',
+						fontSize: 11,
+						bgColor: EntryStatic.colorSet.block.darken.HARDWARE,  // 드롭다운 배경색
+						arrowColor: EntryStatic.colorSet.arrow.default.HARDWARE,
+					},
+					{
+						type: 'Dropdown',
+						options: [
+							['빨간색', '#FF0000'],
+							['주황색', '#FFA500'],
+							['노랑색', '#FFFF00'],
+							['초록색', '#008000'],
+							['하늘색', '#00FFFF'],
+							['파랑색', '#0000FF'],
+							['보라색', '#800080'],
+							['흰색', '#FFFFFF'],
+						],
+						value: '#FF0000',  // 기본 색상
+						fontSize: 11,
+						bgColor: EntryStatic.colorSet.block.darken.HARDWARE,  // 드롭다운 배경색
+						arrowColor: EntryStatic.colorSet.arrow.default.HARDWARE,
+					},
+					{
+						type: 'Indicator',
+						img: 'block_icon/hardware_icon.svg',
+						size: 11,
+					},
+				],
+				events: {},
+				def: {
+					params: [null, null, null],
+					type: 'telliot_car_set_led_color',
+				},
+				pyHelpDef: {
+					params: ['A&direction', 'B&color'],
+					type: 'telliot_car_set_led_color',
+				},
+				paramsKeyMap: {
+					DIRECTION: 0,
+					COLOR: 1,
+				},
+				class: 'telliot_hardware',
+				isNotFor: ['GoldenKidsAICar'],
+				func: (sprite, script) => this.req_change_led_color(sprite, script),
+			},
+
+
+			telliot_car_led_off: {
+				color: EntryStatic.colorSet.block.default.HARDWARE,
+				outerLine: EntryStatic.colorSet.block.darken.HARDWARE,
+				skeleton: 'basic',
+				statements: [],
+				params: [
+					{
+						type: 'Dropdown',
+						options: [
+							['왼쪽', 'left'],
+							['오른쪽', 'right'],
+							['양쪽', 'both'],
+						],
+						value: 'both',
+						fontSize: 11,
+						bgColor: EntryStatic.colorSet.block.darken.HARDWARE,  // 드롭다운 배경색
+						arrowColor: EntryStatic.colorSet.arrow.default.HARDWARE,
+					},
+					{
+						type: 'Indicator',
+						img: 'block_icon/hardware_icon.svg',
+						size: 11,
+					},
+				],
+				events: {},
+				def: {
+					params: [null, null],
+					type: 'telliot_car_led_off',
+				},
+				pyHelpDef: {
+					params: ['A&direction'],
+					type: 'telliot_car_led_off',
+				},
+				paramsKeyMap: {
+					DIRECTION: 0,
+				},
+				class: 'telliot_hardware',
+				isNotFor: ['GoldenKidsAICar'],
+				func: (sprite, script) => this.req_turn_off_led(sprite, script),
+				syntax: {
+					js: [],
+					py: [
+						{
+							syntax: 'Entry.turn_off_led(%1)',
+							textParams: [
+								{
+									type: 'Dropdown',
+									options: [
+										['왼쪽', 'left'],
+										['오른쪽', 'right'],
+										['양쪽', 'both'],
+									],
+									value: 'both',
+									fontSize: 11,
+									bgColor: EntryStatic.colorSet.block.darken.HARDWARE,
+									arrowColor: EntryStatic.colorSet.arrow.default.HARDWARE,
+								},
+							],
+						},
+					],
+				},
+			},
+			telliot_car_led_rgb_setting: {
+				color: EntryStatic.colorSet.block.default.HARDWARE,
+				outerLine: EntryStatic.colorSet.block.darken.HARDWARE,
+				skeleton: 'basic',
+				statements: [],
+				params: [
+					{
+						type: 'Dropdown',
+						options: [
+							['왼쪽', 'left'],
+							['오른쪽', 'right'],
+							['양쪽', 'both'],
+						],
+						value: 'both',
+						fontSize: 11,
+						bgColor: EntryStatic.colorSet.block.darken.HARDWARE,
+						arrowColor: EntryStatic.colorSet.arrow.default.HARDWARE,
+					},
+					{
+						type: 'Block',
+						accept: 'string',
+					},
+					{
+						type: 'Block',
+						accept: 'string',
+					},
+					{
+						type: 'Block',
+						accept: 'string',
+					},
+					{
+						type: 'Indicator',
+						img: 'block_icon/hardware_icon.svg',
+						size: 12,
+					},
+				],
+				events: {},
+				def: {
+					params: [
+						'both',
+						{
+							type: 'text',
+							params: ['255'],
+						},
+						{
+							type: 'text',
+							params: ['255'],
+						},
+						{
+							type: 'text',
+							params: ['255'],
+						},
+						null
+					],
+					type: 'telliot_car_led_rgb_setting',
+				},
+				paramsKeyMap: {
+					DIRECTION: 0,
+					RED: 1,
+					GREEN: 2,
+					BLUE: 3,
+				},
+				class: 'telliot_hardware',
+				isNotFor: ['GoldenKidsAICar'],
+				func: (sprite, script) => this.req_change_led_rgb_color(sprite, script),
+			},
+
+			telliot_light_sensor_value : {
+				color: EntryStatic.colorSet.block.default.HARDWARE,
+				outerLine: EntryStatic.colorSet.block.darken.HARDWARE,
+				skeleton: 'basic_string_field',
+				statements: [],
+				params: [
+					{
+						type : 'Indicator',
+						img : 'block_icon/hardware_icon.svg',
+						size : 11,
+					},
+				],
+				events: {},
+				def: {
+					params : [null],
+					type: 'telliot_cds_sensor_value',
+				},
+				class: 'telliot_cds_sensors',
+				isNotFor : ['GoldenKidsAICar'],
+				func: (sprite, script) => this.req_cds_value(sprite, script),
+			},
+
+
+
+
+
+
+
+
 
 //			telliot_car_set_prompt : {
 //				color: EntryStatic.colorSet.block.default.HARDWARE,
