@@ -1,7 +1,7 @@
 module.exports = {
     getBlocks() {
         return {
-            brush_stamp: {
+            brush_stamp: { //도장 찍기
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -27,7 +27,7 @@ module.exports = {
                 },
                 syntax: { js: [], py: ['Entry.stamp()'] },
             },
-            start_drawing: {
+            start_drawing: { //그리기 시작하기
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -59,7 +59,7 @@ module.exports = {
                 },
                 syntax: { js: [], py: ['Entry.start_drawing()'] },
             },
-            stop_drawing: {
+            stop_drawing: { //그리기 멈추기
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -87,7 +87,7 @@ module.exports = {
                 },
                 syntax: { js: [], py: ['Entry.stop_drawing()'] },
             },
-            start_fill: {
+            start_fill: { //채우기 시작하기
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -121,7 +121,7 @@ module.exports = {
                     return script.callReturn();
                 },
             },
-            stop_fill: {
+            stop_fill: { //채우기 멈추기
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -149,7 +149,7 @@ module.exports = {
                     return script.callReturn();
                 },
             },
-            set_color: {
+            set_color: { // 그리기 색을 정하기?
                 color: EntryStatic.colorSet.block.default.BRUSH,
                 outerLine: EntryStatic.colorSet.block.darken.BRUSH,
                 skeleton: 'basic',
@@ -257,7 +257,7 @@ module.exports = {
                         sprite.brush.moveTo(sprite.getX(), sprite.getY() * -1);
                     }
 
-                    if (!sprite.paint || !sprite.shapes.length) {
+                    if (!sprite.paint || !sprite.paintShapes.length) {
                         Entry.setBasicPaint(sprite);
                         sprite.paint.stop = true;
                     }
@@ -310,7 +310,7 @@ module.exports = {
                 func(sprite, script) {
                     const colour = script.getStringValue('VALUE', script);
 
-                    if (!sprite.paint || !sprite.shapes.length) {
+                    if (!sprite.paint || !sprite.paintShapes.length) {
                         Entry.setBasicPaint(sprite);
                         sprite.paint.stop = true;
                     }
@@ -507,7 +507,7 @@ module.exports = {
                         sprite.brush.stop = true;
                     }
 
-                    if (!sprite.paint || !sprite.shapes.length) {
+                    if (!sprite.paint || !sprite.paintShapes.length) {
                         Entry.setBasicPaint(sprite);
                         sprite.paint.stop = true;
                     }
@@ -609,7 +609,7 @@ module.exports = {
                         sprite.brush.moveTo(sprite.getX(), sprite.getY() * -1);
                     }
 
-                    if (!sprite.paint || !sprite.shapes.length) {
+                    if (!sprite.paint || !sprite.paintShapes.length) {
                         Entry.setBasicPaint(sprite);
                         sprite.paint.stop = true;
                     }
